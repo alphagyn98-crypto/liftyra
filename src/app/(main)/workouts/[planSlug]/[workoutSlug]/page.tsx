@@ -1,0 +1,115 @@
+import AddExerciseModal from "@/app/components/modals/add-exercise-modal";
+import {
+  getWorkoutFromPlan,
+  getExercisesFromWorkout,
+  updateWorkoutName,
+} from "../../actions";
+import ExerciseCard from "@/app/components/cards/exercise-card";
+import EditNameModal from "@/app/components/modals/edit-name-modal";
+import Link from "next/link";
+import { CaretLeftIcon } from "@phosphor-icons/react/dist/ssr";
+import { Suspense } from "react";
+import ErrorCard from "@/app/components/cards/error-card";
+import LoadingExercises from "@/app/components/loaders/loading-exercises";
+
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ planSlug: string; workoutSlug: string }>;
+}) {
+  const { planSlug, workoutSlug } = await params;
+
+  return (
+    <main className="mx-auto mt-10 w-11/12 pb-40">
+      <Link href={`/workouts/${planSlug}`} className="my-2 flex items-center">
+        <CaretLeftIcon size={20} className="text-green" /> Back
+      </Link>
+
+      {/* Single Suspense boundary for all content */}
+      <Suspense fallback={<LoadingExercises />}>
+        <WorkoutContent planSlug={planSlug} workoutSlug={workoutSlug} />
+      </Suspense>
+    </main>
+  );
+}
+
+// Single component that loads all workout and exercise data
+async function WorkoutContent({
+  planSlug,
+  workoutSlug,
+}: {
+  planSlug: string;
+  workoutSlug: string;
+}) {
+  const workout = await getWorkoutFromPlan(planSlug, workoutSlug);
+
+  if ("error" in workout) {
+    return (
+      <>
+        <div className="flex items-center justify-between">
+          <h1 className="text-4xl font-bold">Workout not found</h1>
+        </div>
+        <div className="mt-8 h-26">
+          <ErrorCard errorText={workout.error} variant="secondary" />
+        </div>
+      </>
+    );
+  }
+
+  const exercises = await getExercisesFromWorkout(workout.id);
+
+  if ("error" in exercises) {
+    return (
+      <div className="mt-8 h-26">
+        <ErrorCard errorText={exercises.error} variant="secondary" />
+      </div>
+    );
+  }
+
+  return (
+    <>
+      <div className="flex items-center justify-between">
+        <h1 className="text-4xl font-bold">{workout.name}</h1>
+        <EditNameModal
+          action={updateWorkoutName}
+          title="New Workout Name"
+          currentName={workout.name}
+          workoutId={workout.id}
+          planSlug={planSlug}
+        />
+      </div>
+
+      <div className="mt-4">
+        <h2 className="text-2xl font-semibold">Exercises</h2>
+        {exercises.length > 0 ? (
+          <div className="mt-4 space-y-4">
+            {exercises.map((exercise) => (
+              <ExerciseCard
+                key={exercise.id}
+                exercise={exercise}
+                planSlug={planSlug}
+                workoutSlug={workoutSlug}
+                workoutId={workout.id}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="mt-8 py-12 text-center">
+            <p className="text-foreground/50 text-lg">
+              No exercises in this workout yet. Click the button below to add
+              your first exercise.
+            </p>
+          </div>
+        )}
+      </div>
+
+      {exercises.length <= 12 && (
+        <AddExerciseModal
+          planSlug={planSlug}
+          workoutSlug={workoutSlug}
+          workoutId={workout.id}
+        />
+      )}
+    </>
+  );
+}

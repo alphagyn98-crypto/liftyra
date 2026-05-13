@@ -1,0 +1,137 @@
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --background: #f3f5f9;
+  --foreground: #11151c;
+  --green: #beff44;
+  --dark-green: #8cca26;
+  --faded-green: #dff8aa;
+  --gray: #e6ebf2;
+  --dark-gray: #171c22;
+  --off-black: #11151b;
+  --red: #f24545;
+  --faded-red: #f57a7a;
+  --surface: #ffffff;
+  --surface-elevated: #f8fafc;
+  --muted: #697483;
+  --border: rgba(17, 21, 28, 0.08);
+  --hero-ring: rgba(190, 255, 68, 0.18);
+  --shadow-soft: 0 30px 80px rgba(15, 19, 27, 0.08);
+  --font-plein: "Plein", sans-serif;
+  --font-archivo: "Archivo", sans-serif;
+}
+
+:root[data-theme="dark"] {
+  --background: #0d1014;
+  --foreground: #f3f5f7;
+  --green: #beff44;
+  --dark-green: #94d328;
+  --faded-green: rgba(190, 255, 68, 0.18);
+  --gray: #191d24;
+  --dark-gray: #14181f;
+  --off-black: #090b0f;
+  --surface: #12161d;
+  --surface-elevated: #171c24;
+  --muted: #93a0af;
+  --border: rgba(255, 255, 255, 0.08);
+  --hero-ring: rgba(190, 255, 68, 0.14);
+  --shadow-soft: 0 30px 80px rgba(0, 0, 0, 0.35);
+}
+
+@font-face {
+  font-family: "Plein";
+  src: url("../fonts/Plein-Variable.ttf") format("truetype");
+  font-weight: 100 900;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Archivo";
+  src: url("../fonts/Archivo-Variable.ttf") format("truetype");
+  font-weight: 100 900;
+  font-style: normal;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-green: var(--green);
+  --color-dark-green: var(--dark-green);
+  --color-faded-green: var(--faded-green);
+  --color-gray: var(--gray);
+  --color-dark-gray: var(--dark-gray);
+  --color-off-black: var(--off-black);
+  --color-red: var(--red);
+  --color-faded-red: var(--faded-red);
+  --font-heading: var(--font-plein);
+  --font-body: var(--font-archivo);
+}
+
+html {
+  background: var(--background);
+}
+
+body {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top center, var(--hero-ring), transparent 26%),
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--background) 96%, white 4%),
+      var(--background)
+    );
+  color: var(--foreground);
+  font-family: var(--font-body);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading);
+}
+
+p,
+a,
+label,
+span,
+button,
+input,
+textarea {
+  font-family: var(--font-body);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+textarea {
+  outline: none;
+}
+
+::selection {
+  background: rgba(190, 255, 68, 0.3);
+  color: var(--foreground);
+}
+
+.surface-card {
+  background: linear-gradient(180deg, var(--surface), var(--surface-elevated));
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-soft);
+}
+
+.text-subtle {
+  color: var(--muted);
+}
+
+.hero-glow {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 24px 64px rgba(0, 0, 0, 0.22);
+}

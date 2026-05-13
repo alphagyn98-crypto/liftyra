@@ -1,0 +1,58 @@
+"use server";
+
+import { revalidatePath } from "next/cache";
+
+import { createClient } from "@/utils/supabase/server";
+import { InitialState } from "@/app/types";
+
+export async function signup(
+  prevState: InitialState,
+  formData: FormData,
+): Promise<InitialState> {
+  const supabase = await createClient();
+
+  // type-casting here for convenience
+  // in practice, you should validate your inputs
+  const requestedRole = (formData.get("role") as string) || "client";
+  const role = requestedRole === "pt" ? "pt" : "client";
+
+  const data = {
+    email: formData.get("email") as string,
+    password: formData.get("password") as string,
+    name: formData.get("name") as string,
+    confirmPassword: formData.get("confirmPassword") as string,
+    role,
+  };
+
+  // Validate password confirmation on server-side
+  if (data.password !== data.confirmPassword) {
+    return { error: "Passwords do not match" };
+  }
+
+  // Optional: Add password strength validation
+  if (data.password.length < 6) {
+    return { error: "Password must be at least 6 characters long" };
+  }
+
+  const { error } = await supabase.auth.signUp({
+    email: data.email,
+    password: data.password,
+    options: {
+      data: {
+        display_name: data.name,
+        full_name: data.name,
+        role: data.role,
+      },
+    },
+  });
+
+  if (error) {
+    console.error("Signup error:", error);
+    return { error: error.message };
+  }
+
+  revalidatePath("/", "layout");
+  return {
+    success: "Signup successful! Please check your email for confirmation.",
+  };
+}
