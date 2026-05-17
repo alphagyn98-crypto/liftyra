@@ -16,10 +16,15 @@ const archivo = localFont({
 const APP_NAME = "Liftyra";
 const APP_DEFAULT_TITLE = "Liftyra — Track. Lift. Transform.";
 const APP_TITLE_TEMPLATE = "%s | Liftyra";
+const APP_URL = "https://www.liftyra.web.id";
 const APP_DESCRIPTION =
   "Liftyra adalah platform modern untuk tracking progres gym, assessment tubuh, BMI, laporan, dan social sharing.";
+const APP_DESCRIPTION_EN =
+  "Liftyra is a modern platform for tracking gym progress, body assessments, BMI, reports, and social sharing.";
+const APP_OG_IMAGE = "/onboarding/1.png";
 
 export const metadata: Metadata = {
+  metadataBase: new URL(APP_URL),
   applicationName: APP_NAME,
   title: {
     default: APP_DEFAULT_TITLE,
@@ -37,11 +42,20 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     siteName: APP_NAME,
+    url: APP_URL,
     title: {
       default: APP_DEFAULT_TITLE,
       template: APP_TITLE_TEMPLATE,
     },
-    description: APP_DESCRIPTION,
+    description: APP_DESCRIPTION_EN,
+    images: [
+      {
+        url: APP_OG_IMAGE,
+        width: 941,
+        height: 1672,
+        alt: APP_DEFAULT_TITLE,
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
@@ -49,7 +63,8 @@ export const metadata: Metadata = {
       default: APP_DEFAULT_TITLE,
       template: APP_TITLE_TEMPLATE,
     },
-    description: APP_DESCRIPTION,
+    description: APP_DESCRIPTION_EN,
+    images: [APP_OG_IMAGE],
   },
 };
 
