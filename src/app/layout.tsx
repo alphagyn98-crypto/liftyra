@@ -21,7 +21,7 @@ const APP_DESCRIPTION =
   "Liftyra adalah platform modern untuk tracking progres gym, assessment tubuh, BMI, laporan, dan social sharing.";
 const APP_DESCRIPTION_EN =
   "Liftyra is a modern platform for tracking gym progress, body assessments, BMI, reports, and social sharing.";
-const APP_OG_IMAGE = "/onboarding/1.png";
+const APP_OG_IMAGE = "/og-cover.jpg";
 
 export const metadata: Metadata = {
   metadataBase: new URL(APP_URL),
@@ -51,8 +51,8 @@ export const metadata: Metadata = {
     images: [
       {
         url: APP_OG_IMAGE,
-        width: 941,
-        height: 1672,
+        width: 1200,
+        height: 630,
         alt: APP_DEFAULT_TITLE,
       },
     ],
