@@ -82,6 +82,17 @@ export default function RootLayout({
   return (
     <html lang="id" className="dark" suppressHydrationWarning>
       <head>
+        {/* Explicit OG tags for WhatsApp / Facebook crawler */}
+        <meta property="og:title" content="Liftyra — Track. Lift. Transform." />
+        <meta property="og:description" content="Liftyra is a modern platform for tracking gym progress, body assessments, BMI, reports, and social sharing." />
+        <meta property="og:url" content="https://www.liftyra.web.id" />
+        <meta property="og:image" content="https://www.liftyra.web.id/og-cover.jpg" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:image:type" content="image/jpeg" />
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="Liftyra" />
+
         <link rel="manifest" href="/site.webmanifest" />
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
