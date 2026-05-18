@@ -19,12 +19,14 @@ export default function AuthHashHandler() {
 
     if (!accessToken || !refreshToken) return;
 
+    // If it's an invite, redirect to the accept-invite page with the hash
+    if (type === "invite") {
+      router.replace(`/accept-invite#${hash}`);
+      return;
+    }
+
     const supabase = createClient();
-    setMessage(
-      type === "invite"
-        ? "Mengaktifkan akun client dan menyiapkan session..."
-        : "Menyiapkan session Anda...",
-    );
+    setMessage("Menyiapkan session Anda...");
 
     supabase.auth
       .setSession({

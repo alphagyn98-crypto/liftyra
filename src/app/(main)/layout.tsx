@@ -2,6 +2,7 @@ import Navigation from "../components/ui/navigation";
 import { getUserRoleForApp } from "@/lib/fitmorph-data";
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
+import PostLoginOnboardingGuard from "../components/fitmorph/post-login-onboarding-guard";
 
 export default async function MainLayout({
   children,
@@ -21,6 +22,7 @@ export default async function MainLayout({
 
   return (
     <>
+      <PostLoginOnboardingGuard />
       <Navigation role={role} />
       {children}
     </>

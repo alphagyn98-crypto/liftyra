@@ -66,8 +66,11 @@ export async function createClientFromPt(
     let invited = false;
 
     if (!clientId) {
+      const siteUrl =
+        process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
       const { data: invitedUser, error: inviteError } =
         await admin.auth.admin.inviteUserByEmail(email, {
+          redirectTo: `${siteUrl}/accept-invite`,
           data: {
             display_name: fullName,
             full_name: fullName,

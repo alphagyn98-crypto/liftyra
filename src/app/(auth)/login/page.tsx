@@ -7,7 +7,6 @@ import Input from "@/app/components/ui/input";
 import Button from "@/app/components/ui/button";
 import ThemeToggle from "@/app/components/fitmorph/theme-toggle";
 import AuthHashHandler from "@/app/components/fitmorph/auth-hash-handler";
-import OnboardingGuard from "@/app/components/fitmorph/onboarding-guard";
 import { BrandWordmark } from "@/app/components/fitmorph/ui";
 
 export default function LoginPage() {
@@ -15,7 +14,6 @@ export default function LoginPage() {
 
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-[430px] items-center px-4 py-8 md:max-w-5xl md:px-8">
-      <OnboardingGuard />
       <div className="w-full rounded-[36px] border border-[var(--border)] bg-[linear-gradient(180deg,var(--surface-elevated),var(--surface))] p-6 shadow-[0_30px_80px_rgba(0,0,0,0.18)] md:grid md:grid-cols-[1.05fr_0.95fr] md:gap-8 md:p-8">
         <section className="relative overflow-hidden rounded-[32px] bg-[linear-gradient(160deg,#11151b,#1a2029)] p-6 text-white">
           <div className="absolute top-4 right-4">
