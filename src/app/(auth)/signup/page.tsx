@@ -32,12 +32,12 @@ export default function SignupPage() {
             Buat akun Liftyra dan mulai tracking progres Anda
           </h1>
           <p className="mt-4 max-w-[300px] text-sm leading-6 text-white/70">
-            Setelah daftar, Anda bisa lanjut ke konsep baru: dashboard modern,
+            Setelah daftar, Anda langsung masuk dan lanjut ke konsep baru: dashboard modern,
             assessment tubuh, progres, dan report share card.
           </p>
           <div className="mt-8 space-y-3">
             <div className="rounded-[24px] border border-white/10 bg-white/5 p-4 text-sm text-white/75">
-              Email confirmation tetap memakai Supabase flow yang sudah ada.
+              Registrasi dibuat sesingkat mungkin tanpa langkah konfirmasi email tambahan.
             </div>
             <div className="rounded-[24px] border border-white/10 bg-white/5 p-4 text-sm text-white/75">
               UI baru mendukung dark mode dan light mode dengan gaya modern.
@@ -51,12 +51,11 @@ export default function SignupPage() {
           </p>
           <h2 className="text-foreground mt-3 text-3xl font-bold">Daftar</h2>
           <p className="text-subtle mt-3 text-sm leading-6">
-            Isi data dasar Anda dan pilih peran akun. Setelah berhasil, cek
-            email untuk konfirmasi akun.
+            Isi email dan password. Setelah berhasil, akun langsung dibuat dan Anda otomatis login.
           </p>
           {next !== "/" ? (
             <div className="mt-4 rounded-[22px] border border-[var(--border)] bg-[var(--surface-elevated)] px-4 py-3 text-sm text-[var(--foreground)]">
-              Setelah email dikonfirmasi, Anda akan dilanjutkan ke halaman join PT.
+              Setelah daftar, Anda langsung dilanjutkan ke halaman join PT.
             </div>
           ) : null}
 
@@ -66,45 +65,29 @@ export default function SignupPage() {
             </div>
           ) : null}
 
-          {state?.success ? (
-            <div className="border-green/20 bg-green/10 text-green mt-5 rounded-[22px] border px-4 py-3 text-sm">
-              <p>{state.success}</p>
-              <a
-                href="/login"
-                className="text-foreground mt-3 inline-flex font-semibold"
-              >
-                Lanjut ke halaman masuk
-              </a>
-            </div>
-          ) : null}
-
           <form action={formAction} className="mt-6 flex flex-col gap-4">
             <input type="hidden" name="next" value={next} />
-            <div>
-              <label
-                htmlFor="role"
-                className="text-foreground mb-2 block text-sm font-medium"
-              >
-                Role akun
-              </label>
-              <select
-                id="role"
-                name="role"
-                defaultValue="client"
-                className="text-foreground w-full rounded-[18px] border border-[var(--border)] bg-[var(--surface-elevated)] px-4 py-3 text-sm outline-none"
-              >
-                <option value="client">Client</option>
-                <option value="pt">PT</option>
-              </select>
-            </div>
-            <Input
-              id="name"
-              name="name"
-              type="text"
-              label="Nama lengkap"
-              placeholder="Masukkan nama Anda"
-              required
-            />
+            {next === "/" ? (
+              <div>
+                <label
+                  htmlFor="role"
+                  className="text-foreground mb-2 block text-sm font-medium"
+                >
+                  Role akun
+                </label>
+                <select
+                  id="role"
+                  name="role"
+                  defaultValue="client"
+                  className="text-foreground w-full rounded-[18px] border border-[var(--border)] bg-[var(--surface-elevated)] px-4 py-3 text-sm outline-none"
+                >
+                  <option value="client">Client</option>
+                  <option value="pt">PT</option>
+                </select>
+              </div>
+            ) : (
+              <input type="hidden" name="role" value="client" />
+            )}
             <Input
               id="email"
               name="email"
@@ -119,14 +102,6 @@ export default function SignupPage() {
               type="password"
               label="Password"
               placeholder="Minimal 6 karakter"
-              required
-            />
-            <Input
-              id="confirmPassword"
-              name="confirmPassword"
-              type="password"
-              label="Konfirmasi password"
-              placeholder="Ulangi password"
               required
             />
             <Button
