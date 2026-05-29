@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 
 import { createClient } from "@/utils/supabase/server";
+import { createAdminClient } from "@/utils/supabase/admin";
 import { getUserRoleForApp } from "@/lib/fitmorph-data";
 import { verifyPtJoinToken } from "@/lib/pt-join-link";
 import { InitialState } from "@/app/types";
@@ -20,6 +21,7 @@ export async function joinPtFromToken(
   }
 
   const supabase = await createClient();
+  const admin = createAdminClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -40,17 +42,21 @@ export async function joinPtFromToken(
     return { error: "Akun PT tidak dapat menggunakan link join miliknya sendiri." };
   }
 
-  const { data: trainerProfile, error: trainerError } = await supabase
+  const { data: trainerProfile, error: trainerError } = await admin
     .from("profiles")
-    .select("id, full_name")
+    .select("id, full_name, role")
     .eq("id", payload.trainerId)
     .maybeSingle();
 
-  if (trainerError || !trainerProfile) {
+  if (
+    trainerError ||
+    !trainerProfile ||
+    (trainerProfile.role !== "pt" && trainerProfile.role !== "gym_admin")
+  ) {
     return { error: "Akun PT pada link ini tidak ditemukan." };
   }
 
-  const { error: relationError } = await supabase.from("trainer_clients").upsert(
+  const { error: relationError } = await admin.from("trainer_clients").upsert(
     {
       trainer_id: payload.trainerId,
       client_id: user.id,
@@ -66,7 +72,7 @@ export async function joinPtFromToken(
   }
 
   if (payload.gymId) {
-    const { error: membershipError } = await supabase
+    const { error: membershipError } = await admin
       .from("gym_memberships")
       .upsert(
         {
