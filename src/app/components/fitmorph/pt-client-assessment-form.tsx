@@ -8,8 +8,10 @@ import { saveClientAssessment } from "@/app/(main)/clients/actions";
 
 export default function PtClientAssessmentForm({
   client,
+  mode = "client",
 }: {
   client: PtClientDetail;
+  mode?: "client" | "self";
 }) {
   const [state, formAction, pending] = useActionState(saveClientAssessment, {});
   const [extraFields, setExtraFields] = useState(
@@ -35,6 +37,7 @@ export default function PtClientAssessmentForm({
     parsedWeightKg > 0
       ? (parsedWeightKg / Math.pow(parsedHeightCm / 100, 2)).toFixed(1)
       : "";
+  const isSelf = mode === "self";
 
   return (
     <form action={formAction} className="space-y-4">
@@ -44,7 +47,7 @@ export default function PtClientAssessmentForm({
         <Input
           id="fullName"
           name="fullName"
-          label="Nama client"
+          label={isSelf ? "Nama Anda" : "Nama client"}
           defaultValue={client.profile.fullName}
           required
         />
@@ -202,7 +205,7 @@ export default function PtClientAssessmentForm({
           htmlFor="primaryGoal"
           className="text-foreground text-sm font-medium"
         >
-          Goal utama client
+          {isSelf ? "Goal utama Anda" : "Goal utama client"}
         </label>
         <textarea
           id="primaryGoal"
@@ -294,14 +297,18 @@ export default function PtClientAssessmentForm({
 
       <div className="flex flex-col space-y-2">
         <label htmlFor="notes" className="text-foreground text-sm font-medium">
-          Catatan PT
+          {isSelf ? "Catatan assessment" : "Catatan PT"}
         </label>
         <textarea
           id="notes"
           name="notes"
           rows={5}
           defaultValue={client.initialAssessment.notes}
-          placeholder="Tulis evaluasi, rekomendasi, atau catatan coaching untuk client"
+          placeholder={
+            isSelf
+              ? "Tulis evaluasi pribadi, hasil device, atau catatan progres Anda"
+              : "Tulis evaluasi, rekomendasi, atau catatan coaching untuk client"
+          }
           className="text-foreground placeholder:text-subtle rounded-[20px] border border-[var(--border)] bg-[var(--surface-elevated)] px-4 py-3 text-sm outline-none"
         />
       </div>
@@ -322,7 +329,13 @@ export default function PtClientAssessmentForm({
 
       <Button
         type="submit"
-        text={pending ? "Menyimpan assessment..." : "Simpan assessment client"}
+        text={
+          pending
+            ? "Menyimpan assessment..."
+            : isSelf
+              ? "Simpan assessment saya"
+              : "Simpan assessment client"
+        }
         disabled={pending}
         size="large"
       />

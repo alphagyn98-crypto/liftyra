@@ -2,6 +2,7 @@ import {
   BellSimpleIcon,
   CaretRightIcon,
   ChartLineUpIcon,
+  ClipboardTextIcon,
   MoonStarsIcon,
   ShareNetworkIcon,
   SparkleIcon,
@@ -60,7 +61,12 @@ export default async function Home() {
   const heroImage = getHeroImage(data.gender);
   const avatarPosition = getAvatarPosition(data.gender);
   const metrics = Object.values(data.metrics);
-  const actionIcons = [ChartLineUpIcon, ShareNetworkIcon, UserIcon];
+  const actionIcons = [
+    ClipboardTextIcon,
+    ChartLineUpIcon,
+    ShareNetworkIcon,
+    UserIcon,
+  ];
   const dashboardCardClass =
     "border border-[rgba(17,21,28,0.08)] bg-[linear-gradient(180deg,#ffffff,#f8fafc)] shadow-[0_30px_80px_rgba(15,19,27,0.08)] dark:border-white/10 dark:bg-[linear-gradient(180deg,#151a20,#0f1419)] dark:shadow-[0_30px_80px_rgba(0,0,0,0.32)]";
   const dashboardTitleClass = "text-[#11151c] dark:text-white";

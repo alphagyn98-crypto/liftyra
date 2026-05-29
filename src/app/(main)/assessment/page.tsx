@@ -9,6 +9,7 @@ import {
 import {
   getClientOverviewForUser,
   getPtClientDetailForUser,
+  getSelfAssessmentDetailForUser,
   getUserRoleForApp,
 } from "@/lib/fitmorph-data";
 import { createClient } from "@/utils/supabase/server";
@@ -39,19 +40,25 @@ export default async function PtAssessmentHubPage({
 
   const resolvedSearchParams = searchParams ? await searchParams : {};
   const selectedClientId = getSingleParam(resolvedSearchParams.clientId);
+  const selfMode = getSingleParam(resolvedSearchParams.self) === "1";
   const pickerMode = getSingleParam(resolvedSearchParams.picker) === "1";
 
   const data = await getClientOverviewForUser(supabase, user);
-  const selectedClient = selectedClientId
+  const selectedSelf = selfMode
+    ? await getSelfAssessmentDetailForUser(supabase, user)
+    : null;
+  const selectedClient = !selfMode && selectedClientId
     ? await getPtClientDetailForUser(supabase, user, selectedClientId)
     : null;
-  const showPicker = !selectedClient || pickerMode;
+  const selectedSubject = selectedSelf || selectedClient;
+  const isSelfAssessment = Boolean(selectedSelf);
+  const showPicker = pickerMode;
 
   return (
     <ScreenContainer>
       <PageHeader
         title="Input assessment"
-        subtitle="Dua klik saja: buka menu assessment, pilih client, lalu langsung isi dan submit assessment."
+        subtitle="PT bisa isi assessment untuk diri sendiri atau untuk client dari satu flow yang sama."
         backHref="/clients"
         rightSlot={<ThemeToggle />}
       />
@@ -60,64 +67,83 @@ export default async function PtAssessmentHubPage({
         <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <div>
             <p className="text-foreground text-sm font-semibold">
-              Workflow cepat input assessment
+              Workflow assessment PT
             </p>
             <p className="text-subtle mt-2 text-sm leading-6">
-              Pilih client lewat popup, isi assessment, lalu submit. Kalau
-              perlu, baru lanjut ke halaman body demographic client.
+              Pilih assessment diri sendiri atau pilih client lewat popup, lalu
+              isi form dan submit. Data akan langsung masuk ke progres akun
+              terkait.
             </p>
           </div>
 
-          <a
-            href={
-              selectedClient
-                ? `/assessment?clientId=${selectedClient.profile.id}&picker=1`
-                : "/assessment?picker=1"
-            }
-            className="bg-green inline-flex items-center justify-center rounded-[18px] px-4 py-3 text-sm font-semibold text-black"
-          >
-            {selectedClient ? "Ganti client" : "Pilih client"}
-          </a>
+          <div className="flex flex-col gap-3 sm:flex-row">
+            <a
+              href="/assessment?self=1"
+              className="bg-green inline-flex items-center justify-center rounded-[18px] px-4 py-3 text-sm font-semibold text-black"
+            >
+              Assessment saya
+            </a>
+            <a
+              href={
+                selectedClient
+                  ? `/assessment?clientId=${selectedClient.profile.id}&picker=1`
+                  : "/assessment?picker=1"
+              }
+              className="text-foreground inline-flex items-center justify-center rounded-[18px] border border-[var(--border)] bg-[var(--surface-elevated)] px-4 py-3 text-sm font-medium"
+            >
+              {selectedClient ? "Ganti client" : "Pilih client"}
+            </a>
+          </div>
         </div>
       </SimpleCard>
 
-      {selectedClient ? (
+      {selectedSubject ? (
         <>
           <SimpleCard className="mb-4">
             <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
               <div>
                 <p className="text-subtle text-xs tracking-[0.18em] uppercase">
-                  Client terpilih
+                  {isSelfAssessment ? "Assessment pribadi" : "Client terpilih"}
                 </p>
                 <h2 className="text-foreground mt-2 text-2xl font-bold">
-                  {selectedClient.profile.fullName}
+                  {selectedSubject.profile.fullName}
                 </h2>
                 <p className="text-subtle mt-2 text-sm leading-6">
-                  {selectedClient.profile.email} ·{" "}
-                  {selectedClient.profile.gender}
+                  {selectedSubject.profile.email} · {selectedSubject.profile.gender}
                 </p>
               </div>
 
               <a
-                href={`/clients/${selectedClient.profile.id}?tab=overview#client-profile`}
+                href={
+                  isSelfAssessment
+                    ? "/progress?tab=overview#client-profile"
+                    : `/clients/${selectedSubject.profile.id}?tab=overview#client-profile`
+                }
                 className="text-foreground inline-flex items-center justify-center rounded-[18px] border border-[var(--border)] bg-[var(--surface-elevated)] px-4 py-3 text-sm font-medium"
               >
-                Buka body demographic
+                {isSelfAssessment ? "Buka progres saya" : "Buka body demographic"}
               </a>
             </div>
           </SimpleCard>
 
           <div id="assessment-form">
-            <SectionTitle title="Input assessment" rightText="PT mode" />
+            <SectionTitle
+              title={isSelfAssessment ? "Input assessment saya" : "Input assessment"}
+              rightText="PT mode"
+            />
           </div>
           <SimpleCard>
-            <PtClientAssessmentForm client={selectedClient} />
+            <PtClientAssessmentForm
+              client={selectedSubject}
+              mode={isSelfAssessment ? "self" : "client"}
+            />
           </SimpleCard>
         </>
       ) : (
         <SimpleCard>
           <p className="text-subtle text-sm leading-6">
-            Pilih client terlebih dahulu untuk mulai input assessment.
+            Pilih assessment diri sendiri atau pilih client terlebih dahulu untuk
+            mulai input assessment.
           </p>
         </SimpleCard>
       )}

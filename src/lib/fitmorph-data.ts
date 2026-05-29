@@ -398,6 +398,11 @@ function getQuickActions(role: ProfileRole): QuickAction[] {
   if (isStaffRole(role)) {
     return [
       {
+        title: "Assessment saya",
+        subtitle: "Isi body assessment pribadi PT Anda dari satu form cepat",
+        href: "/assessment?self=1",
+      },
+      {
         title: "Lihat progres pribadi",
         subtitle: "Pantau assessment tubuh dan tren berat akun PT Anda",
         href: "/progress",
@@ -1831,6 +1836,232 @@ export async function getPtClientDetailForUser(
                 .slice(0, 2)
                 .map((field) => `${field.label}: ${field.value}`)
             : []),
+        ],
+      })) || [],
+  };
+}
+
+export async function getSelfAssessmentDetailForUser(
+  supabase: SupabaseServerClient,
+  user: User,
+): Promise<PtClientDetail | null> {
+  const profile = await ensureProfileRecord(supabase, user).catch(() => null);
+  if (!profile) return null;
+
+  const allCheckins = await getRecentCheckins(supabase, user.id, 14).catch(
+    () => null,
+  );
+  const latestOverall = allCheckins?.[0];
+  const latest = latestOverall || null;
+  const previous = allCheckins?.find((item) => item.id !== latest?.id) || null;
+  const trendSource =
+    allCheckins && allCheckins.length > 0
+      ? [...allCheckins].slice(0, 7).reverse()
+      : [];
+
+  return {
+    profile: {
+      id: user.id,
+      fullName: profile.full_name || getSafeFullName(user),
+      email: profile.email || user.email || "",
+      gender: profile.gender || "male",
+      heightCm: profile.height_cm,
+      primaryGoal: profile.primary_goal,
+    },
+    initialAssessment: {
+      checkinDate: new Date().toISOString().slice(0, 10),
+      weightKg:
+        latestOverall?.weight_kg !== null &&
+        latestOverall?.weight_kg !== undefined
+          ? Number(latestOverall.weight_kg).toFixed(1)
+          : "",
+      heightCm: profile.height_cm ? String(profile.height_cm) : "",
+      bodyFatPct:
+        latestOverall?.body_fat_pct !== null &&
+        latestOverall?.body_fat_pct !== undefined
+          ? Number(latestOverall.body_fat_pct).toFixed(1)
+          : "",
+      muscleMassKg:
+        latestOverall?.muscle_mass_kg !== null &&
+        latestOverall?.muscle_mass_kg !== undefined
+          ? Number(latestOverall.muscle_mass_kg).toFixed(1)
+          : "",
+      armMuscleMassKg:
+        latestOverall?.arm_muscle_mass_kg !== null &&
+        latestOverall?.arm_muscle_mass_kg !== undefined
+          ? Number(latestOverall.arm_muscle_mass_kg).toFixed(1)
+          : "",
+      armFatPct:
+        latestOverall?.arm_fat_pct !== null &&
+        latestOverall?.arm_fat_pct !== undefined
+          ? Number(latestOverall.arm_fat_pct).toFixed(1)
+          : "",
+      legMuscleMassKg:
+        latestOverall?.leg_muscle_mass_kg !== null &&
+        latestOverall?.leg_muscle_mass_kg !== undefined
+          ? Number(latestOverall.leg_muscle_mass_kg).toFixed(1)
+          : "",
+      legFatPct:
+        latestOverall?.leg_fat_pct !== null &&
+        latestOverall?.leg_fat_pct !== undefined
+          ? Number(latestOverall.leg_fat_pct).toFixed(1)
+          : "",
+      visceralFatLevel:
+        latestOverall?.visceral_fat_level !== null &&
+        latestOverall?.visceral_fat_level !== undefined
+          ? Number(latestOverall.visceral_fat_level).toFixed(1)
+          : "",
+      caloriesKcal:
+        latestOverall?.calories_kcal !== null &&
+        latestOverall?.calories_kcal !== undefined
+          ? Number(latestOverall.calories_kcal).toFixed(0)
+          : "",
+      bmi:
+        latestOverall?.bmi !== null && latestOverall?.bmi !== undefined
+          ? Number(latestOverall.bmi).toFixed(1)
+          : "",
+      bodyAgeYears:
+        latestOverall?.body_age_years !== null &&
+        latestOverall?.body_age_years !== undefined
+          ? String(latestOverall.body_age_years)
+          : "",
+      subcutaneousFatPct:
+        latestOverall?.subcutaneous_fat_pct !== null &&
+        latestOverall?.subcutaneous_fat_pct !== undefined
+          ? Number(latestOverall.subcutaneous_fat_pct).toFixed(1)
+          : "",
+      skeletalMusclePct:
+        latestOverall?.skeletal_muscle_pct !== null &&
+        latestOverall?.skeletal_muscle_pct !== undefined
+          ? Number(latestOverall.skeletal_muscle_pct).toFixed(1)
+          : "",
+      extraFields: Array.isArray(latestOverall?.extra_fields)
+        ? latestOverall.extra_fields
+        : [],
+      notes: latestOverall?.notes || "",
+    },
+    latestAssessment: {
+      checkinDate: latest?.checkin_date || null,
+      weightKg: toNumber(latest?.weight_kg),
+      heightCm: profile.height_cm,
+      bmi: toNumber(latest?.bmi),
+      bodyFatPct: toNumber(latest?.body_fat_pct),
+      muscleMassKg: toNumber(latest?.muscle_mass_kg),
+      armMuscleMassKg: toNumber(latest?.arm_muscle_mass_kg),
+      armFatPct: toNumber(latest?.arm_fat_pct),
+      legMuscleMassKg: toNumber(latest?.leg_muscle_mass_kg),
+      legFatPct: toNumber(latest?.leg_fat_pct),
+      visceralFatLevel: toNumber(latest?.visceral_fat_level),
+      caloriesKcal: toNumber(latest?.calories_kcal),
+      bodyAgeYears:
+        latest?.body_age_years !== null && latest?.body_age_years !== undefined
+          ? Number(latest.body_age_years)
+          : null,
+      subcutaneousFatPct: toNumber(latest?.subcutaneous_fat_pct),
+      skeletalMusclePct: toNumber(latest?.skeletal_muscle_pct),
+      extraFields: Array.isArray(latest?.extra_fields)
+        ? latest.extra_fields
+        : [],
+    },
+    latestMetrics: [
+      {
+        title: "Berat",
+        value: formatWeight(toNumber(latest?.weight_kg)),
+        subtitle:
+          latest && previous
+            ? `${formatDelta(toNumber(latest.weight_kg), toNumber(previous.weight_kg), " kg")} vs sebelumnya`
+            : "Belum ada pembanding",
+      },
+      {
+        title: "BMI",
+        value: formatNumber(toNumber(latest?.bmi)),
+        subtitle: latest?.bmi_category || "Belum ada data",
+      },
+      {
+        title: "Fat",
+        value:
+          latest?.body_fat_pct !== null && latest?.body_fat_pct !== undefined
+            ? `${Number(latest.body_fat_pct).toFixed(1)} %`
+            : "—",
+        subtitle: "Body fat terkini",
+      },
+      {
+        title: "Visceral fat",
+        value:
+          latest?.visceral_fat_level !== null &&
+          latest?.visceral_fat_level !== undefined
+            ? `${Number(latest.visceral_fat_level).toFixed(1)} %`
+            : "—",
+        subtitle: "Indikator lemak visceral",
+      },
+    ],
+    bodyMetrics: [
+      {
+        label: "Kalori",
+        value:
+          latest?.calories_kcal !== null && latest?.calories_kcal !== undefined
+            ? `${Number(latest.calories_kcal).toFixed(0)} kcal`
+            : "—",
+        delta: "BMR / device reading",
+      },
+      {
+        label: "Body age",
+        value:
+          latest?.body_age_years !== null &&
+          latest?.body_age_years !== undefined
+            ? `${latest.body_age_years} th`
+            : "—",
+        delta: "Estimasi usia tubuh",
+      },
+      {
+        label: "Subcutaneous",
+        value:
+          latest?.subcutaneous_fat_pct !== null &&
+          latest?.subcutaneous_fat_pct !== undefined
+            ? `${Number(latest.subcutaneous_fat_pct).toFixed(1)} %`
+            : "—",
+        delta: "Lemak subkutan",
+      },
+      {
+        label: "Skeletal",
+        value:
+          latest?.skeletal_muscle_pct !== null &&
+          latest?.skeletal_muscle_pct !== undefined
+            ? `${Number(latest.skeletal_muscle_pct).toFixed(1)} %`
+            : "—",
+        delta: "Skeletal muscle",
+      },
+    ],
+    trendLabels:
+      trendSource.length > 0
+        ? trendSource.map((item) => formatShortDate(item.checkin_date))
+        : getRecentDayLabels(7),
+    trendValues:
+      trendSource.length > 0
+        ? trendSource.map((item) => toNumber(item.weight_kg) || 0)
+        : [0, 0, 0, 0, 0, 0, 0],
+    timeline:
+      allCheckins?.slice(0, 5).map((item) => ({
+        title: "Assessment pribadi",
+        time: `${new Intl.DateTimeFormat("id-ID", {
+          day: "2-digit",
+          month: "short",
+          year: "numeric",
+        }).format(
+          new Date(item.checkin_date),
+        )} · ${formatRelativeDate(item.created_at)}`,
+        note: item.notes || "Belum ada catatan assessment.",
+        chips: [
+          item.weight_kg
+            ? `${Number(item.weight_kg).toFixed(1)} kg`
+            : "Berat kosong",
+          item.bmi ? `BMI ${Number(item.bmi).toFixed(1)}` : "BMI kosong",
+          item.body_fat_pct
+            ? `Fat ${Number(item.body_fat_pct).toFixed(1)}%`
+            : "Fat kosong",
+          item.visceral_fat_level
+            ? `Visceral ${Number(item.visceral_fat_level).toFixed(1)}%`
+            : "Visceral kosong",
         ],
       })) || [],
   };

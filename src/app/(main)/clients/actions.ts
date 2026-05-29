@@ -243,7 +243,7 @@ export async function saveClientAssessment(
       .filter((field) => field.label && field.value);
 
     if (!clientId) {
-      return { error: "Client tidak valid." };
+      return { error: "Subjek assessment tidak valid." };
     }
 
     const bmi =
@@ -303,9 +303,18 @@ export async function saveClientAssessment(
     revalidatePath("/clients");
     revalidatePath("/clients/reports");
     revalidatePath("/assessment");
+    revalidatePath("/");
     revalidatePath("/progress");
+    revalidatePath("/stats");
+    revalidatePath("/reports");
+    revalidatePath("/profile");
 
-    return { success: "Assessment client berhasil disimpan." };
+    return {
+      success:
+        clientId === user.id
+          ? "Assessment pribadi berhasil disimpan."
+          : "Assessment client berhasil disimpan.",
+    };
   } catch (error) {
     return {
       error:
