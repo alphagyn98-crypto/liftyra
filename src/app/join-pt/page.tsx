@@ -17,13 +17,13 @@ export default async function JoinPtPage({ searchParams }: JoinPtPageProps) {
 
   if (!payload) {
     return (
-      <main className="mx-auto flex min-h-screen w-full max-w-[430px] items-center px-4 py-8 md:max-w-3xl md:px-8">
-        <div className="w-full rounded-[36px] border border-[var(--border)] bg-[linear-gradient(180deg,var(--surface-elevated),var(--surface))] p-6 shadow-[0_30px_80px_rgba(0,0,0,0.18)]">
-          <div className="mb-6 flex items-center justify-between">
-            <BrandWordmark className="bg-transparent px-0 py-0 shadow-none" imageClassName="h-10" />
+      <main className="mx-auto flex min-h-[100dvh] w-full max-w-[430px] items-center px-3.5 py-4 sm:px-4 sm:py-6 md:max-w-3xl md:px-8 md:py-8">
+        <div className="w-full rounded-[28px] border border-[var(--border)] bg-[linear-gradient(180deg,var(--surface-elevated),var(--surface))] p-4 shadow-[0_24px_64px_rgba(0,0,0,0.14)] sm:p-5 md:rounded-[36px] md:p-6">
+          <div className="mb-5 flex items-center justify-between md:mb-6">
+            <BrandWordmark className="bg-transparent px-0 py-0 shadow-none" imageClassName="h-8 sm:h-9 md:h-10" />
             <ThemeToggle />
           </div>
-          <h1 className="text-foreground text-3xl font-bold">Link tidak valid</h1>
+          <h1 className="text-foreground text-[1.9rem] leading-none font-bold md:text-3xl">Link tidak valid</h1>
           <p className="text-subtle mt-3 text-sm leading-6">
             Link join PT ini tidak valid atau sudah kedaluwarsa. Minta PT mengirim link baru.
           </p>
@@ -61,17 +61,17 @@ export default async function JoinPtPage({ searchParams }: JoinPtPageProps) {
   }
 
   return (
-    <main className="mx-auto flex min-h-screen w-full max-w-[430px] items-center px-4 py-8 md:max-w-3xl md:px-8">
-      <div className="w-full rounded-[36px] border border-[var(--border)] bg-[linear-gradient(180deg,var(--surface-elevated),var(--surface))] p-6 shadow-[0_30px_80px_rgba(0,0,0,0.18)]">
-        <div className="mb-6 flex items-center justify-between">
-          <BrandWordmark className="bg-transparent px-0 py-0 shadow-none" imageClassName="h-10" />
+    <main className="mx-auto flex min-h-[100dvh] w-full max-w-[430px] items-center px-3.5 py-4 sm:px-4 sm:py-6 md:max-w-3xl md:px-8 md:py-8">
+      <div className="w-full rounded-[28px] border border-[var(--border)] bg-[linear-gradient(180deg,var(--surface-elevated),var(--surface))] p-4 shadow-[0_24px_64px_rgba(0,0,0,0.14)] sm:p-5 md:rounded-[36px] md:p-6">
+        <div className="mb-5 flex items-center justify-between md:mb-6">
+          <BrandWordmark className="bg-transparent px-0 py-0 shadow-none" imageClassName="h-8 sm:h-9 md:h-10" />
           <ThemeToggle />
         </div>
 
         <p className="text-subtle text-sm tracking-[0.24em] uppercase">
           Join PT
         </p>
-        <h1 className="text-foreground mt-3 text-3xl font-bold">
+        <h1 className="text-foreground mt-2.5 text-[1.9rem] leading-none font-bold md:mt-3 md:text-3xl">
           Bergabung ke {trainerProfile?.full_name || "PT"}
         </h1>
         <p className="text-subtle mt-3 text-sm leading-6">
@@ -80,7 +80,7 @@ export default async function JoinPtPage({ searchParams }: JoinPtPageProps) {
         </p>
 
         {!user ? (
-          <div className="mt-6 space-y-4 rounded-[24px] border border-[var(--border)] bg-[var(--surface-elevated)] p-5">
+          <div className="mt-5 space-y-4 rounded-[20px] border border-[var(--border)] bg-[var(--surface-elevated)] p-4 sm:mt-6 sm:rounded-[24px] sm:p-5">
             <p className="text-foreground text-sm font-semibold">
               Anda belum login
             </p>
@@ -88,28 +88,28 @@ export default async function JoinPtPage({ searchParams }: JoinPtPageProps) {
               Jika belum punya akun, pilih daftar. Setelah selesai, Anda akan
               otomatis kembali ke halaman ini untuk melanjutkan join.
             </p>
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
               <a
                 href={`/login?next=${encodeURIComponent(joinPath)}`}
-                className="inline-flex rounded-[18px] bg-green px-5 py-3 text-sm font-semibold text-black shadow-[0_20px_40px_rgba(190,255,68,0.22)]"
+                className="inline-flex w-full items-center justify-center rounded-[16px] bg-green px-5 py-3 text-sm font-semibold text-black shadow-[0_20px_40px_rgba(190,255,68,0.22)] sm:w-auto sm:rounded-[18px]"
               >
                 Masuk
               </a>
               <a
                 href={`/signup?next=${encodeURIComponent(joinPath)}`}
-                className="text-foreground inline-flex rounded-[18px] border border-[var(--border)] bg-[var(--surface)] px-5 py-3 text-sm font-semibold"
+                className="text-foreground inline-flex w-full items-center justify-center rounded-[16px] border border-[var(--border)] bg-[var(--surface)] px-5 py-3 text-sm font-semibold sm:w-auto sm:rounded-[18px]"
               >
                 Daftar sebagai client
               </a>
             </div>
           </div>
         ) : alreadyLinked ? (
-          <div className="mt-6 rounded-[24px] border border-green/20 bg-green/10 px-5 py-4 text-sm text-green">
+          <div className="mt-5 rounded-[20px] border border-green/20 bg-green/10 px-4 py-4 text-sm leading-6 text-green sm:mt-6 sm:rounded-[24px] sm:px-5">
             Akun Anda sudah terhubung ke PT ini. Anda bisa lanjut ke dashboard
             dan mulai tracking progres.
           </div>
         ) : userRole !== "client" ? (
-          <div className="mt-6 rounded-[24px] border border-red/20 bg-red/10 px-5 py-4 text-sm text-red">
+          <div className="mt-5 rounded-[20px] border border-red/20 bg-red/10 px-4 py-4 text-sm leading-6 text-red sm:mt-6 sm:rounded-[24px] sm:px-5">
             Link ini hanya bisa dipakai oleh akun client. Login dengan akun
             client untuk melanjutkan.
           </div>
@@ -119,7 +119,7 @@ export default async function JoinPtPage({ searchParams }: JoinPtPageProps) {
           <div className="mt-4">
             <a
               href="/"
-              className="text-foreground inline-flex rounded-[18px] border border-[var(--border)] bg-[var(--surface)] px-5 py-3 text-sm font-semibold"
+              className="text-foreground inline-flex w-full items-center justify-center rounded-[16px] border border-[var(--border)] bg-[var(--surface)] px-5 py-3 text-sm font-semibold sm:w-auto sm:rounded-[18px]"
             >
               Buka dashboard
             </a>

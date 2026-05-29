@@ -30,7 +30,7 @@ export function ScreenContainer({
 }) {
   return (
     <main
-      className={`mx-auto min-h-screen w-full max-w-[430px] px-4 pt-5 pb-28 md:max-w-5xl md:px-8 md:pb-10 ${className}`}
+      className={`mx-auto min-h-screen w-full max-w-[430px] px-3.5 pt-4 pb-28 sm:px-4 md:max-w-5xl md:px-8 md:pt-5 md:pb-10 ${className}`}
     >
       {children}
     </main>
@@ -40,14 +40,20 @@ export function ScreenContainer({
 export function BrandWordmark({
   className = "",
   imageClassName = "",
+  tone = "dark",
 }: {
   className?: string;
   imageClassName?: string;
+  tone?: "dark" | "light";
 }) {
   return (
     <div className={`inline-flex ${className}`}>
       <img
-        src="/logo-liftyra-dark-cropped.png"
+        src={
+          tone === "light"
+            ? "/logo-liftyra-dark-cropped.png"
+            : "/logo-liftyra-cropped.png"
+        }
         alt="Liftyra — Track. Lift. Transform."
         className={`block h-10 w-auto ${imageClassName}`}
       />

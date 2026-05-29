@@ -29,7 +29,7 @@ export default function Button({
     extrasmall: "text-xs px-3 py-2 min-w-[68px]",
     small: "text-sm px-4 py-2.5 min-w-[92px]",
     medium: "text-sm px-5 py-3 min-w-[120px]",
-    large: "text-base px-6 py-4 min-w-[140px]",
+    large: "w-full text-base px-6 py-4 min-w-[140px] sm:w-auto",
   };
 
   return (
