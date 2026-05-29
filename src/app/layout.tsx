@@ -31,6 +31,15 @@ export const metadata: Metadata = {
     template: APP_TITLE_TEMPLATE,
   },
   description: APP_DESCRIPTION,
+  icons: {
+    icon: [
+      { url: "/favicon-v2.ico", sizes: "any" },
+      { url: "/favicon-v2-32x32.png", type: "image/png", sizes: "32x32" },
+      { url: "/favicon-v2-16x16.png", type: "image/png", sizes: "16x16" },
+    ],
+    apple: [{ url: "/apple-touch-icon-v2.png" }],
+    shortcut: ["/favicon-v2.ico"],
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
@@ -94,10 +103,6 @@ export default function RootLayout({
         <meta property="og:site_name" content="Liftyra" />
 
         <link rel="manifest" href="/site.webmanifest" />
-        <link rel="icon" href="/favicon.ico" sizes="any" />
-        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <meta name="theme-color" content="#f3f5f9" />
       </head>
       <body
