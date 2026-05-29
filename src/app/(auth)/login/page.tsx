@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect, useState } from "react";
 
 import { login } from "./actions";
 import Input from "@/app/components/ui/input";
@@ -11,6 +11,12 @@ import { BrandWordmark } from "@/app/components/fitmorph/ui";
 
 export default function LoginPage() {
   const [state, formAction, pending] = useActionState(login, {});
+  const [next, setNext] = useState("/");
+
+  useEffect(() => {
+    const value = new URLSearchParams(window.location.search).get("next");
+    setNext(value && value.startsWith("/") ? value : "/");
+  }, []);
 
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-[430px] items-center px-4 py-8 md:max-w-5xl md:px-8">
@@ -53,6 +59,11 @@ export default function LoginPage() {
           <p className="text-subtle mt-3 text-sm leading-6">
             Gunakan email dan password Anda untuk melanjutkan ke aplikasi.
           </p>
+          {next !== "/" ? (
+            <div className="mt-4 rounded-[22px] border border-[var(--border)] bg-[var(--surface-elevated)] px-4 py-3 text-sm text-[var(--foreground)]">
+              Setelah login, Anda akan dilanjutkan ke halaman join PT.
+            </div>
+          ) : null}
 
           <AuthHashHandler />
 
@@ -63,6 +74,7 @@ export default function LoginPage() {
           ) : null}
 
           <form action={formAction} className="mt-6 flex flex-col gap-4">
+            <input type="hidden" name="next" value={next} />
             <Input
               id="email"
               name="email"
@@ -86,6 +98,15 @@ export default function LoginPage() {
               size="large"
             />
           </form>
+          <p className="text-subtle mt-5 text-sm">
+            Belum punya akun?{" "}
+            <a
+              href={`/signup?next=${encodeURIComponent(next)}`}
+              className="text-foreground font-semibold"
+            >
+              Daftar di sini
+            </a>
+          </p>
         </section>
       </div>
     </main>

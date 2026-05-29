@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 
 import { createClient } from "@/utils/supabase/server";
 import { InitialState } from "@/app/types";
@@ -10,6 +11,9 @@ export async function signup(
   formData: FormData,
 ): Promise<InitialState> {
   const supabase = await createClient();
+  const next = String(formData.get("next") || "/");
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+  const emailRedirectTo = `${siteUrl}/auth/confirm?next=${encodeURIComponent(next)}`;
 
   // type-casting here for convenience
   // in practice, you should validate your inputs
@@ -34,10 +38,11 @@ export async function signup(
     return { error: "Password must be at least 6 characters long" };
   }
 
-  const { error } = await supabase.auth.signUp({
+  const { data: signupData, error } = await supabase.auth.signUp({
     email: data.email,
     password: data.password,
     options: {
+      emailRedirectTo,
       data: {
         display_name: data.name,
         full_name: data.name,
@@ -52,7 +57,14 @@ export async function signup(
   }
 
   revalidatePath("/", "layout");
+  if (signupData.session && next.startsWith("/")) {
+    redirect(next);
+  }
+
   return {
-    success: "Signup successful! Please check your email for confirmation.",
+    success:
+      next === "/"
+        ? "Signup successful! Please check your email for confirmation."
+        : "Akun berhasil dibuat. Cek email Anda untuk konfirmasi, lalu Anda akan kembali ke halaman join PT.",
   };
 }

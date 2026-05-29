@@ -46,7 +46,9 @@ export async function updateSession(request: NextRequest) {
       request.nextUrl.pathname.startsWith("/signup"))
   ) {
     const url = request.nextUrl.clone();
-    url.pathname = "/";
+    const next = request.nextUrl.searchParams.get("next");
+    url.pathname = next && next.startsWith("/") ? next : "/";
+    url.search = "";
     return NextResponse.redirect(url);
   }
 
@@ -57,11 +59,16 @@ export async function updateSession(request: NextRequest) {
     !request.nextUrl.pathname.startsWith("/signup") &&
     !request.nextUrl.pathname.startsWith("/auth") &&
     !request.nextUrl.pathname.startsWith("/onboarding") &&
-    !request.nextUrl.pathname.startsWith("/accept-invite")
+    !request.nextUrl.pathname.startsWith("/accept-invite") &&
+    !request.nextUrl.pathname.startsWith("/join-pt")
   ) {
     // no user, potentially respond by redirecting the user to the login page
     const url = request.nextUrl.clone();
     url.pathname = "/login";
+    const nextPath = `${request.nextUrl.pathname}${request.nextUrl.search}`;
+    if (nextPath !== "/login") {
+      url.searchParams.set("next", nextPath);
+    }
     return NextResponse.redirect(url);
   }
 

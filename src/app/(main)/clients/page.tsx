@@ -55,7 +55,7 @@ export default async function ClientsPage() {
         >
           <p className="text-foreground text-sm font-semibold">Tambah client</p>
           <p className="text-subtle mt-1 text-xs leading-5">
-            Buat akun client baru dan hubungkan langsung ke akun PT.
+            Buat akun client via email atau bagikan link join PT.
           </p>
         </a>
         <a

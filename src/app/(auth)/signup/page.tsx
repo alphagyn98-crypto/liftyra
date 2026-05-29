@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect, useState } from "react";
 
 import { signup } from "./actions";
 import Input from "@/app/components/ui/input";
@@ -10,6 +10,12 @@ import { BrandWordmark } from "@/app/components/fitmorph/ui";
 
 export default function SignupPage() {
   const [state, formAction, pending] = useActionState(signup, {});
+  const [next, setNext] = useState("/");
+
+  useEffect(() => {
+    const value = new URLSearchParams(window.location.search).get("next");
+    setNext(value && value.startsWith("/") ? value : "/");
+  }, []);
 
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-[430px] items-center px-4 py-8 md:max-w-5xl md:px-8">
@@ -48,6 +54,11 @@ export default function SignupPage() {
             Isi data dasar Anda dan pilih peran akun. Setelah berhasil, cek
             email untuk konfirmasi akun.
           </p>
+          {next !== "/" ? (
+            <div className="mt-4 rounded-[22px] border border-[var(--border)] bg-[var(--surface-elevated)] px-4 py-3 text-sm text-[var(--foreground)]">
+              Setelah email dikonfirmasi, Anda akan dilanjutkan ke halaman join PT.
+            </div>
+          ) : null}
 
           {state?.error ? (
             <div className="border-red/20 bg-red/10 text-red mt-5 rounded-[22px] border px-4 py-3 text-sm">
@@ -68,6 +79,7 @@ export default function SignupPage() {
           ) : null}
 
           <form action={formAction} className="mt-6 flex flex-col gap-4">
+            <input type="hidden" name="next" value={next} />
             <div>
               <label
                 htmlFor="role"
@@ -127,7 +139,10 @@ export default function SignupPage() {
 
           <p className="text-subtle mt-5 text-sm">
             Sudah punya akun?{" "}
-            <a href="/login" className="text-foreground font-semibold">
+            <a
+              href={`/login?next=${encodeURIComponent(next)}`}
+              className="text-foreground font-semibold"
+            >
               Masuk di sini
             </a>
           </p>
