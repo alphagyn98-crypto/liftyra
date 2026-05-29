@@ -10,10 +10,7 @@ import {
 } from "@phosphor-icons/react/ssr";
 import ThemeToggle from "@/app/components/fitmorph/theme-toggle";
 import { BrandWordmark, ScreenContainer } from "@/app/components/fitmorph/ui";
-import {
-  getDashboardDataForUser,
-  getUserRoleForApp,
-} from "@/lib/fitmorph-data";
+import { getDashboardDataForUser } from "@/lib/fitmorph-data";
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 
@@ -59,12 +56,6 @@ export default async function Home() {
   }
 
   const currentUser = user!;
-  const role = await getUserRoleForApp(supabase, currentUser);
-
-  if (role !== "client") {
-    redirect("/clients");
-  }
-
   const data = await getDashboardDataForUser(supabase, currentUser);
   const heroImage = getHeroImage(data.gender);
   const avatarPosition = getAvatarPosition(data.gender);

@@ -20,9 +20,10 @@ const clientItems = [
 ];
 
 const staffItems = [
+  { href: "/", label: "Saya", icon: HouseSimpleIcon },
+  { href: "/progress", label: "Progres", icon: ClipboardTextIcon },
   { href: "/clients", label: "Klien", icon: UsersThreeIcon },
-  { href: "/assessment", label: "Assessment", icon: ClipboardTextIcon },
-  { href: "/clients/reports", label: "Report", icon: ShareNetworkIcon },
+  { href: "/assessment", label: "Input", icon: ChartBarIcon },
   { href: "/profile", label: "Profil", icon: UserIcon },
 ];
 

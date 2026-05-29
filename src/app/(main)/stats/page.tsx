@@ -27,7 +27,7 @@ import {
   getUserSquatPR,
   getWorkoutTimeStats,
 } from "./actions";
-import { getProgressDataForUser, getUserRoleForApp } from "@/lib/fitmorph-data";
+import { getProgressDataForUser } from "@/lib/fitmorph-data";
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 
@@ -308,11 +308,6 @@ export default async function StatsPage({
   }
 
   const currentUser = user!;
-  const role = await getUserRoleForApp(supabase, currentUser);
-
-  if (role !== "client") {
-    redirect("/clients");
-  }
 
   const resolvedSearchParams = searchParams ? await searchParams : {};
   const rawFrom = getSingleParam(resolvedSearchParams.from);

@@ -394,7 +394,27 @@ function getRecentDayLabels(days = 5) {
   });
 }
 
-function getQuickActions(): QuickAction[] {
+function getQuickActions(role: ProfileRole): QuickAction[] {
+  if (isStaffRole(role)) {
+    return [
+      {
+        title: "Lihat progres pribadi",
+        subtitle: "Pantau assessment tubuh dan tren berat akun PT Anda",
+        href: "/progress",
+      },
+      {
+        title: "Buka statistik",
+        subtitle: "Lihat ringkasan performa dan kebiasaan latihan Anda",
+        href: "/stats",
+      },
+      {
+        title: "Share progres",
+        subtitle: "Buat poster progres dari assessment pribadi Anda",
+        href: "/reports",
+      },
+    ];
+  }
+
   return [
     {
       title: "Lihat progres",
@@ -446,7 +466,7 @@ function getEmptyDashboardData(user: User): DashboardResponse {
     },
     trendLabels: getRecentDayLabels(),
     trendValues: [0, 0, 0, 0, 0],
-    quickActions: getQuickActions(),
+    quickActions: getQuickActions(getSafeRole(user)),
   };
 }
 
@@ -842,6 +862,7 @@ export async function getDashboardDataForUser(
 
   try {
     const profile = await ensureProfileRecord(supabase, user);
+    const role = profile?.role ?? getSafeRole(user);
     const checkins = await getRecentCheckins(supabase, user.id, 14);
     if (checkins === null) return fallback;
 
@@ -905,7 +926,7 @@ export async function getDashboardDataForUser(
       },
       trendLabels,
       trendValues,
-      quickActions: getQuickActions(),
+      quickActions: getQuickActions(role),
     };
   } catch (error) {
     console.error("Failed to load FitMorph dashboard:", getErrorDetails(error));

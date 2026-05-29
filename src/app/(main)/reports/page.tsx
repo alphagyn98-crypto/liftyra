@@ -1,10 +1,7 @@
 import ThemeToggle from "@/app/components/fitmorph/theme-toggle";
 import ShareCardBuilder from "@/app/components/fitmorph/share-card-builder";
 import { PageHeader, ScreenContainer } from "@/app/components/fitmorph/ui";
-import {
-  getShareProgressDataForUser,
-  getUserRoleForApp,
-} from "@/lib/fitmorph-data";
+import { getShareProgressDataForUser } from "@/lib/fitmorph-data";
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 
@@ -27,12 +24,6 @@ export default async function ReportsPage({
   }
 
   const currentUser = user!;
-  const role = await getUserRoleForApp(supabase, currentUser);
-
-  if (role !== "client") {
-    redirect("/clients");
-  }
-
   const resolvedSearchParams = searchParams ? await searchParams : {};
   const assessmentId = getSingleParam(resolvedSearchParams.assessmentId);
   const data = await getShareProgressDataForUser(supabase, currentUser, {
