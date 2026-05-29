@@ -71,7 +71,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   maximumScale: 1,
   userScalable: false,
-  themeColor: "#0d1014",
+  themeColor: "#f3f5f9",
 };
 
 export default function RootLayout({
@@ -80,7 +80,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="id" className="dark" suppressHydrationWarning>
+    <html lang="id" suppressHydrationWarning>
       <head>
         {/* Explicit OG tags for WhatsApp / Facebook crawler */}
         <meta property="og:title" content="Liftyra — Track. Lift. Transform." />
@@ -98,7 +98,7 @@ export default function RootLayout({
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
         <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-        <meta name="theme-color" content="#0d1014" />
+        <meta name="theme-color" content="#f3f5f9" />
       </head>
       <body
         className={`${plein.variable} ${archivo.variable} bg-background text-foreground min-h-screen antialiased`}
