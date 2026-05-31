@@ -38,16 +38,26 @@ export async function updateSession(request: NextRequest) {
   const {
     data: { user },
   } = await supabase.auth.getUser();
+  const pathname = request.nextUrl.pathname;
+  const nextParam = request.nextUrl.searchParams.get("next") || "";
+  const isJoinPtSignup =
+    pathname.startsWith("/signup") && nextParam.startsWith("/join-pt");
+
+  if (pathname.startsWith("/signup") && !isJoinPtSignup) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/login";
+    url.search = "";
+    return NextResponse.redirect(url);
+  }
 
   // Redirect to home if user is logged in and trying to access login or signup
   if (
     user &&
-    (request.nextUrl.pathname.startsWith("/login") ||
-      request.nextUrl.pathname.startsWith("/signup"))
+    (pathname.startsWith("/login") || pathname.startsWith("/signup"))
   ) {
     const url = request.nextUrl.clone();
-    const next = request.nextUrl.searchParams.get("next");
-    url.pathname = next && next.startsWith("/") ? next : "/";
+    const next = nextParam;
+    url.pathname = next && next.startsWith("/") ? next : "/dashboard";
     url.search = "";
     return NextResponse.redirect(url);
   }
@@ -55,12 +65,13 @@ export async function updateSession(request: NextRequest) {
   // If the user is not logged in and trying to access a protected route,
   if (
     !user &&
-    !request.nextUrl.pathname.startsWith("/login") &&
-    !request.nextUrl.pathname.startsWith("/signup") &&
-    !request.nextUrl.pathname.startsWith("/auth") &&
-    !request.nextUrl.pathname.startsWith("/onboarding") &&
-    !request.nextUrl.pathname.startsWith("/accept-invite") &&
-    !request.nextUrl.pathname.startsWith("/join-pt")
+    pathname !== "/" &&
+    !pathname.startsWith("/login") &&
+    !pathname.startsWith("/signup") &&
+    !pathname.startsWith("/auth") &&
+    !pathname.startsWith("/onboarding") &&
+    !pathname.startsWith("/accept-invite") &&
+    !pathname.startsWith("/join-pt")
   ) {
     // no user, potentially respond by redirecting the user to the login page
     const url = request.nextUrl.clone();

@@ -15,6 +15,10 @@ export async function signup(
   const admin = createAdminClient();
   const next = String(formData.get("next") || "/");
 
+  if (!next.startsWith("/join-pt")) {
+    return { error: "Pendaftaran akun hanya tersedia melalui link PT." };
+  }
+
   const requestedRole = (formData.get("role") as string) || "client";
   const role =
     next.startsWith("/join-pt") ? "client" : requestedRole === "pt" ? "pt" : "client";

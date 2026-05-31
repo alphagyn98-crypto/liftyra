@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
+import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "./providers/theme-provider";
 
@@ -11,6 +12,12 @@ const plein = localFont({
 const archivo = localFont({
   src: "../fonts/Archivo-Variable.ttf",
   variable: "--font-archivo",
+});
+
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
 });
 
 const APP_NAME = "Liftyra";
@@ -106,7 +113,7 @@ export default function RootLayout({
         <meta name="theme-color" content="#f3f5f9" />
       </head>
       <body
-        className={`${plein.variable} ${archivo.variable} bg-background text-foreground min-h-screen antialiased`}
+        className={`${plein.variable} ${archivo.variable} ${inter.variable} bg-background text-foreground min-h-screen antialiased`}
       >
         <ThemeProvider>{children}</ThemeProvider>
       </body>

@@ -92,7 +92,7 @@ export default function OnboardingPage() {
 
   const finish = useCallback(() => {
     localStorage.setItem("onboarding_done", "true");
-    router.push("/");
+    router.push("/dashboard");
   }, [router]);
 
   const isFirst = current === 0;

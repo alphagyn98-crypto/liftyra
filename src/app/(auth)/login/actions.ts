@@ -16,7 +16,7 @@ export async function login(
     email: formData.get("email") as string,
     password: formData.get("password") as string,
   };
-  const next = String(formData.get("next") || "/");
+  const next = String(formData.get("next") || "/dashboard");
 
   const { error } = await supabase.auth.signInWithPassword(data);
 
@@ -26,5 +26,5 @@ export async function login(
   }
 
   revalidatePath("/", "layout");
-  redirect(next.startsWith("/") ? next : "/");
+  redirect(next.startsWith("/") ? next : "/dashboard");
 }

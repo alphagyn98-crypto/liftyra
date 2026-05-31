@@ -35,7 +35,7 @@ export default async function PtAssessmentHubPage({
 
   const role = await getUserRoleForApp(supabase, user);
   if (role === "client") {
-    redirect("/");
+    redirect("/dashboard");
   }
 
   const resolvedSearchParams = searchParams ? await searchParams : {};

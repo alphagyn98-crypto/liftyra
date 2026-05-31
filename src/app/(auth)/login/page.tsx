@@ -11,11 +11,12 @@ import { BrandWordmark } from "@/app/components/fitmorph/ui";
 
 export default function LoginPage() {
   const [state, formAction, pending] = useActionState(login, {});
-  const [next, setNext] = useState("/");
+  const [next, setNext] = useState("/dashboard");
+  const showJoinPtSignup = next.startsWith("/join-pt");
 
   useEffect(() => {
     const value = new URLSearchParams(window.location.search).get("next");
-    setNext(value && value.startsWith("/") ? value : "/");
+    setNext(value && value.startsWith("/") ? value : "/dashboard");
   }, []);
 
   return (
@@ -62,7 +63,7 @@ export default function LoginPage() {
           <p className="text-subtle mt-2.5 text-sm leading-6 md:mt-3">
             Gunakan email dan password Anda untuk melanjutkan ke aplikasi.
           </p>
-          {next !== "/" ? (
+          {next !== "/dashboard" ? (
             <div className="mt-4 rounded-[18px] border border-[var(--border)] bg-[var(--surface-elevated)] px-4 py-3 text-sm leading-6 text-[var(--foreground)] md:rounded-[22px]">
               Setelah login, Anda akan dilanjutkan ke halaman join PT.
             </div>
@@ -101,15 +102,21 @@ export default function LoginPage() {
               size="large"
             />
           </form>
-          <p className="text-subtle mt-4 text-sm leading-6 md:mt-5">
-            Belum punya akun?{" "}
-            <a
-              href={`/signup?next=${encodeURIComponent(next)}`}
-              className="text-foreground font-semibold"
-            >
-              Daftar di sini
-            </a>
-          </p>
+          {showJoinPtSignup ? (
+            <p className="text-subtle mt-4 text-sm leading-6 md:mt-5">
+              Belum punya akun client?{" "}
+              <a
+                href={`/signup?next=${encodeURIComponent(next)}`}
+                className="text-foreground font-semibold"
+              >
+                Daftar dari link PT ini
+              </a>
+            </p>
+          ) : (
+            <p className="text-subtle mt-4 text-sm leading-6 md:mt-5">
+              Akses akun dibuat langsung oleh admin atau melalui PT Anda.
+            </p>
+          )}
         </section>
       </div>
     </main>

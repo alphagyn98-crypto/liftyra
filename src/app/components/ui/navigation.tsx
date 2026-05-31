@@ -12,7 +12,7 @@ import type { ProfileRole } from "@/lib/fitmorph-data";
 import { usePathname } from "next/navigation";
 
 const clientItems = [
-  { href: "/", label: "Beranda", icon: HouseSimpleIcon },
+  { href: "/dashboard", label: "Beranda", icon: HouseSimpleIcon },
   { href: "/stats", label: "Statistik", icon: ChartBarIcon },
   { href: "/progress", label: "Progres", icon: ClipboardTextIcon },
   { href: "/reports", label: "Share", icon: ShareNetworkIcon },
@@ -20,7 +20,7 @@ const clientItems = [
 ];
 
 const staffItems = [
-  { href: "/", label: "Saya", icon: HouseSimpleIcon },
+  { href: "/dashboard", label: "Saya", icon: HouseSimpleIcon },
   { href: "/progress", label: "Progres", icon: ClipboardTextIcon },
   { href: "/clients", label: "Klien", icon: UsersThreeIcon },
   { href: "/assessment", label: "Input", icon: ChartBarIcon },
@@ -38,7 +38,7 @@ export default function Navigation({ role }: { role: ProfileRole }) {
   const items = role === "client" ? clientItems : staffItems;
 
   const isActive = (href: string) => {
-    if (href === "/") return pathname === "/";
+    if (href === "/dashboard") return pathname === "/dashboard";
     return pathname.startsWith(href);
   };
 

@@ -70,27 +70,7 @@ export default function SignupPage() {
 
           <form action={formAction} className="mt-5 flex flex-col gap-3.5 md:mt-6 md:gap-4">
             <input type="hidden" name="next" value={next} />
-            {next === "/" ? (
-              <div>
-                <label
-                  htmlFor="role"
-                  className="text-foreground mb-2 block text-sm font-medium"
-                >
-                  Role akun
-                </label>
-                <select
-                  id="role"
-                  name="role"
-                  defaultValue="client"
-                  className="text-foreground w-full rounded-[16px] border border-[var(--border)] bg-[var(--surface-elevated)] px-4 py-3 text-sm outline-none md:rounded-[18px]"
-                >
-                  <option value="client">Client</option>
-                  <option value="pt">PT</option>
-                </select>
-              </div>
-            ) : (
-              <input type="hidden" name="role" value="client" />
-            )}
+            <input type="hidden" name="role" value="client" />
             <Input
               id="email"
               name="email"
